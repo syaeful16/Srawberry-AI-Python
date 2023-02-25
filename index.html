@@ -30,68 +30,8 @@
       </div>
   </div>
   <script>
-    // // Load the model
-    // async function loadModel() {
-    //   const model = await tf.loadLayersModel('model/model.json');
-    //   return model;
-    // }
-
-    // // Mengambil tensor dari gambar
-    // async function preprocessImage(image) {
-    //   let tensor = tf.browser.fromPixels(image)
-    //       .resizeNearestNeighbor([224, 224])
-    //       .toFloat()
-    //       .expandDims();
-
-    //   return tensor;
-    // }
-
-    // // Memanggil model untuk memprediksi label gambar
-    // async function predict(model, image) {
-    //   const tensor = await preprocessImage(image);
-    //   const prediction = await model.predict(tensor).data();
-    //   return prediction;
-    // }
-
-    // Membaca file gambar yang dipilih dan memprediksi label gambar
-    // $(document).ready(function() {
-    //   let model;
-    //   loadModel().then(result => {
-    //     model = result;
-    //   });
-
-    //   $('#custominput').on('click', function() {
-    //     $('#gambar-input').click();
-    //   })
-
-    //   $('#gambar-input').on('change', function() {
-    //     $('#nama').text(this.files[0].name);
-        
-    //     let file = this.files[0];
-    //     let reader = new FileReader();
-    //     reader.onload = async function(e) {
-    //       $('#gambar-output').attr('src', e.target.result);
-    //       let image = new Image();
-    //       image.src = "data testing/Buah Busuk/buah busuk_2.jpeg";
-    //       image.width = 224;
-    //       image.height = 224;
-
-    //       // Memanggil fungsi predict untuk memprediksi label gambar
-    //       let prediction = await predict(model, image);
-
-    //       // Menampilkan hasil prediksi
-    //       let label = prediction.indexOf(Math.max(...prediction));
-    //       console.log(label);
-    //       const classes = ['Bercak Daun', 'Buah Busuk', 'Buah Embun Tepung', 'Daun Embun Tepung', 'Sehat'];
-    //       $('#hasil-prediksi').text(`${classes[label]}`);
-    //     }
-
-    //     reader.readAsDataURL(file);
-    //   })
-    // });
-
     async function loadModel() {
-      const model = await tf.loadLayersModel('https://raw.githubusercontent.com/syaeful16/SrawberryDisease-AI-Python/main/model/model.json');
+      const model = await tf.loadLayersModel('model/model.json');
       return model;
     }
 
