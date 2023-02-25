@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.9.0/dist/tf.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <img src="/gambar/leaf 1.png" alt="">
+  <img src="/gambar/leaf 1.png" alt="">
+  <h1>Deteksi Penyakit <br> Tanaman Buah Stroberi</h1>
+  <div class="box">
+      <div class="img-load">
+          <div class="img-show">
+              <img id="gambar-output" alt="">
+          </div>
+          <input type="file" id="gambar-input" accept="image/*" hidden>
+          <button type="button" id="custominput">Pilih gambar</button>
+      </div>
+      <div class="text-result">
+          <span>Nama file</span>
+          <p id="nama">Belum Memilih Gambar</p>
+          <br>
+          <span>Hasil Prediksi</span>
+          <p id="hasil-prediksi"></p>
+      </div>
+  </div>
+  <script>
+    // // Load the model
+    // async function loadModel() {
+    //   const model = await tf.loadLayersModel('model/model.json');
+    //   return model;
+    // }
+
+    // // Mengambil tensor dari gambar
+    // async function preprocessImage(image) {
+    //   let tensor = tf.browser.fromPixels(image)
+    //       .resizeNearestNeighbor([224, 224])
+    //       .toFloat()
+    //       .expandDims();
+
+    //   return tensor;
+    // }
+
+    // // Memanggil model untuk memprediksi label gambar
+    // async function predict(model, image) {
+    //   const tensor = await preprocessImage(image);
+    //   const prediction = await model.predict(tensor).data();
+    //   return prediction;
+    // }
+
+    // Membaca file gambar yang dipilih dan memprediksi label gambar
+    // $(document).ready(function() {
+    //   let model;
+    //   loadModel().then(result => {
+    //     model = result;
+    //   });
+
+    //   $('#custominput').on('click', function() {
+    //     $('#gambar-input').click();
+    //   })
+
+    //   $('#gambar-input').on('change', function() {
+    //     $('#nama').text(this.files[0].name);
+        
+    //     let file = this.files[0];
+    //     let reader = new FileReader();
+    //     reader.onload = async function(e) {
+    //       $('#gambar-output').attr('src', e.target.result);
+    //       let image = new Image();
+    //       image.src = "data testing/Buah Busuk/buah busuk_2.jpeg";
+    //       image.width = 224;
+    //       image.height = 224;
+
+    //       // Memanggil fungsi predict untuk memprediksi label gambar
+    //       let prediction = await predict(model, image);
+
+    //       // Menampilkan hasil prediksi
+    //       let label = prediction.indexOf(Math.max(...prediction));
+    //       console.log(label);
+    //       const classes = ['Bercak Daun', 'Buah Busuk', 'Buah Embun Tepung', 'Daun Embun Tepung', 'Sehat'];
+    //       $('#hasil-prediksi').text(`${classes[label]}`);
+    //     }
+
+    //     reader.readAsDataURL(file);
+    //   })
+    // });
+
+    async function loadModel() {
+      const model = await tf.loadLayersModel('http://127.0.0.1:5500/model/model.json');
+      return model;
+    }
+
+    // Predict an image
+    async function predictImage(model, image) {
+      // Preprocess the image
+      const tensor = tf.browser.fromPixels(image)
+        .resizeNearestNeighbor([224, 224])
+        .toFloat()
+        .expandDims();
+
+      // Make predictions
+      const predictions = await model.predict(tensor).data();
+
+      // Get the highest probability class
+      const indexOfMaxValue = predictions.indexOf(Math.max(...predictions));
+
+      console.log(`Predicted class: ${indexOfMaxValue}`);
+
+      const classes = ['Bercak Daun', 'Buah Busuk', 'Buah Embun Tepung', 'Daun Embun Tepung', 'Sehat'];
+      $('#hasil-prediksi').text(`${classes[indexOfMaxValue]}`)
+    }
+
+    $(document).ready(function() {
+      $('#custominput').on('click', function() {
+        $('#gambar-input').click();
+      })
+
+      $('#gambar-input').on('change', function() {
+        $('#nama').text(this.files[0].name);
+        
+        let file = this.files[0];
+        let reader = new FileReader();
+        reader.onload = async function(e) {
+          $('#gambar-output').attr('src', e.target.result);
+          let image = new Image();
+          image.src = e.target.result;
+          image.width = 224;
+          image.height = 224;
+
+          // Memanggil fungsi predict untuk memprediksi label gambar
+          image.onload = async function() {
+            const model = await loadModel();
+            predictImage(model, image);
+          };
+        }
+
+        reader.readAsDataURL(file);
+      })
+    });
+
+    // Load the image
+    // const image = new Image();
+    // image.src = 'data testing/Buah Busuk/buah busuk_3.jpeg';
+    // image.onload = async function() {
+    //   const model = await loadModel();
+    //   predictImage(model, image);
+    // };
+  </script>
+</body>
+</html>
